@@ -20,7 +20,7 @@ echo "I have " . count($friends) . " friends";
 
 $friends = array('victor', 'alex', 'marius');
 
-echo 'the $friends variable ' . (is_array($friends) ? "IS" : "IS NOT") . " an array"
+echo 'the $friends variable ' . (is_array($friends) ? "IS" : "IS NOT") . " an array";
 
 ?>
 <hr>
@@ -122,21 +122,6 @@ echo array_sum($arr);
 ?>
 <hr>
 
-<!-- product function -->
-<h3>more than sum up !</h3>
-<?php
-include_once "functions.php";
-
-$arr = [3, 3, 3];
-echo "original";
-dump($arr);
-
-echo "modified <br>";
-echo array_product($arr);
-
-?>
-<hr>
-
 <!-- array intersect function -->
 <h3>we have a lot of things in comon bro, help me with my homework </h3>
 <?php
@@ -158,7 +143,189 @@ dump($result);
 ?>
 <hr>
 
+<!-- combine -->
+<h3>slow deep into associative arrays</h3>
+<?php
+
+// our keys
+$keys = array("a", "b", "c");
+// our values
+$values = array(1, 2, 3);
+
+echo "original";
+dump($keys);
+dump($values);
+
+
+$result = array_combine($keys, $values);
+
+echo "modified";
+dump($result);
+?>
+<hr>
+
 <!-- ASSOCIATIVE ARRAYS -->
 <h1> ASSOCIATIVE ARRAYS FUNCTIONS</h1>
 <hr>
+<hr>
+
+<!-- array walk -->
+<h3>keys and values !</h3>
+<?php
+function myfunction($value, $key)
+{
+    echo "The key $key has the value $value<br>";
+}
+$a = array("a" => "red", "b" => "green", "c" => "blue");
+array_walk($a, "myfunction");
+?>
+<hr>
+
+<!-- array flip -->
+<h3>switch the values with keys</h3>
+<?php
+include_once "functions.php";
+
+$data = array(
+    'name' => 'John',
+    'age' => 30,
+    'city' => 'New York',
+    'occupation' => 'Engineer'
+);
+echo "original";
+dump($data);
+
+$flippedArray = array_flip($data);
+echo "original";
+dump($flippedArray);
+?>
+<hr>
+
+<!-- merge recursive -->
+<h3>merge recursive</h3>
+<?php
+include_once "functions.php";
+
+$array1 = array("a" => array("red"), "b" => array("green", "blue"));
+$array2 = array("a" => array("yellow"), "b" => array("black"));
+
+echo "original";
+dump($array1);
+dump($array2);
+
+$result = array_merge_recursive($array1, $array2);
+echo "modified";
+dump($result);
+
+?>
+<hr>
+
+<!-- keys in upperacase -->
+<h3>key in CASE UPPER</h3>
+<?php
+include_once "functions.php";
+
+$arr = array("a" => 1, "B" => 2, "c" => 3);
+echo "original";
+dump($arr);
+
+$result = array_change_key_case($arr, CASE_UPPER);
+echo "modified";
+dump($result)
+?>
+<hr>
+
+<!-- array search for key -->
+<h3>array search for key</h3>
+<?php
+include_once "functions.php";
+
+$arr = array("a" => 1, "b" => 2, "c" => 3);
+dump($arr);
+
+$key = array_search(2, $arr); // $key will be "b"
+dump($key);
+?>
+<hr>
+
+<!-- return the keys -->
+<h3>give me the keys</h3>
+<?php
+include_once "functions.php";
+
+$arra = array("a" => 1, "b" => 2, "c" => 3);
+echo "original";
+dump($arr);
+
+$keys = array_keys($arr);
+echo "modified";
+dump($keys);
+?>
+<hr>
+
+<!-- return the values -->
+<h3>give me the values</h3>
+<?php
+include_once "functions.php";
+
+$arra = array("a" => 1, "b" => 2, "c" => 3);
+echo "original";
+dump($arr);
+
+$keys = array_values($arr);
+echo "modified";
+dump($keys);
+?>
+<hr>
+
+<!-- array key exists -->
+<h3>does the key from the arr exists ?</h3>
+<?php
+include_once "functions.php";
+
+$arr = array("a" => 1, "b" => 2, "c" => 3);
+
+dump($arr);
+
+echo 'the key ' . (array_key_exists("c", $arr) ? " DOES" : " DOES NOT") . " in the array";
+
+?>
+<hr>
+
+<!-- array intersect key  -->
+<h3>Computes the intersection of arrays using keys for comparison.</h3>
+<?php
+include_once "functions.php";
+
+$array1 = array("a" => 1, "b" => 2, "c" => 3);
+$array2 = array("b" => 2, "c" => 4);
+
+echo "original";
+dump($array1);
+dump($array2);
+
+$result = array_intersect_key($array1, $array2);
+echo "modified";
+dump($result);
+
+?>
+<hr>
+
+<!-- array diff using key intersect key  -->
+<h3>Computes the difference of arrays using keys for comparison.</h3>
+<?php
+include_once "functions.php";
+
+$array1 = array("a" => 1, "b" => 2, "c" => 3);
+$array2 = array("b" => 2, "c" => 4);
+
+echo "original";
+dump($array1);
+dump($array2);
+
+$result = array_diff_key($array1, $array2);
+echo "modified";
+dump($result);
+
+?>
 <hr>
