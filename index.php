@@ -18,44 +18,107 @@ echo "I have " . count($friends) . " friends";
 <h3>is array ?</h3>
 <?php
 
-$friends = array('victor', 'alex', 'marius');
+$friends = array('victor', 'vlad', 'sergiu');
 
 echo 'the $friends variable ' . (is_array($friends) ? "IS" : "IS NOT") . " an array";
 
 ?>
 <hr>
 
-<!-- sort function -->
-<h3>sort function</h3>
+<!-- sum function, prod function, custom division and substraction -->
+<h3>calculator</h3>
+
+<form method="POST" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <input type="number" name="number1" value="" required>
+    <input type="number" name="number2" value="">
+    <input type="submit" name="+" value="+">
+    <input type="submit" name="-" value="-">
+    <input type="submit" name="*" value="*">
+    <input type="submit" name="/" value="/">
+</form>
+
 <?php
 include_once "functions.php";
 
-$numbers = array(2, 3, 1);
+function calc()
+{
+    // take the values and put them in an array as concatenated string
+    $numbersArray = array();
 
-echo "original";
-dump($numbers);
+    if (isset($_POST['number1']) && isset($_POST['number2'])) {
 
-sort($numbers);
+        $combinedString = $_POST['number1'] . " " . $_POST['number2'];
 
-echo "modified";
-dump($numbers);
+        $numbersArray[] = $combinedString;
+    } else {
+        $numbersArray[] = "0";
+    }
+
+    // divide the first string from the numbers array into array of 2 strings
+    $spliting = explode(" ", $numbersArray[0]);
+
+    // custom functions
+    function array_subtract(&$arr)
+    {
+        $result = reset($arr);
+        $arr = array_slice($arr, 1);
+        foreach ($arr as $value) {
+            $result -= $value;
+        }
+        return $result;
+    }
+
+    function array_divide(&$arr)
+    {
+        $result = reset($arr);
+        $arr = array_slice($arr, 1);
+        foreach ($arr as $value) {
+            $result /= $value;
+        }
+        return $result;
+    }
+
+    // main logic
+    if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST["+"])) {
+        echo array_sum($spliting);
+    }
+    if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST["-"])) {
+        echo array_subtract($spliting);
+    }
+    if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST["*"])) {
+        echo array_product($spliting);
+    }
+    if ($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST["/"])) {
+        echo array_divide($spliting);
+    }
+}
+calc();
 
 ?>
 <hr>
 
-<!-- shuffle function -->
-<h3>shuffle the array</h3>
+<!-- shuffle and sort functions -->
+<h3>shuffle and sort the array</h3>
+<form method="GET" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <input type="submit" name="shuffle" value="Shuffle Array">
+    <input type="submit" name="sort" value="Sort Array">
+</form>
+
 <?php
-include_once "functions.php";
 
-echo "original";
 $nums = array(1, 3, 5, 7, 9, 11);
-dump($nums);
 
-echo "modified";
-shuffle($nums);
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["shuffle"])) {
+    shuffle($nums);
+    echo "<p>Shuffled:</p>";
+}
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["sort"])) {
+    sort($nums);
+    echo "<p>Sorted:</p>";
+}
 
-dump($nums);
+echo implode(", ", $nums);
+
 ?>
 <hr>
 
@@ -75,28 +138,12 @@ dump($voidArr);
 ?>
 <hr>
 
-<!-- sum function -->
-<h3>sum up !</h3>
-<?php
-include_once "functions.php";
-
-$arr = [1, 2, 3];
-echo "original";
-dump($arr);
-
-echo "modified <br>";
-echo array_sum($arr);
-
-
-?>
-<hr>
-
 <!-- array unique function -->
 <h3>do not be a part of the crowd, be unqiue !</h3>
 <?php
 include_once "functions.php";
 
-$operSis = ['ubuntu', 'redhat', 'mint', 'mint', 'redhat', 'arch linux'];
+$operSis = ['ubuntu', 'redhat', 'mint', 'mint', 'redhat', 'arch'];
 
 echo "original";
 dump($operSis);
@@ -107,23 +154,8 @@ dump(array_unique($operSis));
 ?>
 <hr>
 
-<!-- sum function -->
-<h3>sum up !</h3>
-<?php
-include_once "functions.php";
-
-$arr = [3, 3, 3];
-echo "original";
-dump($arr);
-
-echo "modified <br>";
-echo array_sum($arr);
-
-?>
-<hr>
-
 <!-- array intersect function -->
-<h3>we have a lot of things in comon bro, help me with my homework </h3>
+<h3>we have a lot of things in comon bro </h3>
 <?php
 include_once "functions.php";
 
@@ -143,8 +175,35 @@ dump($result);
 ?>
 <hr>
 
+<h3>Sum of squares of even numbers</h3>
+<?php
+
+// Function to calculate the sum of squares of even numbers in an array
+function sumOfSquaresOfEvenNumbers($numbers)
+{
+    $evenNumbers = array_filter($numbers, function ($num) {
+        return $num % 2 == 0;
+    });
+
+    $squares = array_map(function ($num) {
+        return $num * $num;
+    }, $evenNumbers);
+
+    $sum = array_sum($squares);
+
+    return $sum;
+}
+
+$inputArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+$sumOfSquares = sumOfSquaresOfEvenNumbers($inputArray);
+
+echo "Sum of squares of even numbers: " . $sumOfSquares;
+?>
+<hr>
+
 <!-- combine -->
-<h3>slow deep into associative arrays</h3>
+<h3>slow dive into associative arrays</h3>
 <?php
 
 // our keys
@@ -182,38 +241,47 @@ array_walk($a, "myfunction");
 <hr>
 
 <!-- array flip -->
-<h3>switch the values with keys</h3>
+<h3>Switch the Values with Keys</h3>
+
 <?php
 include_once "functions.php";
 
+// Original data
 $data = array(
     'name' => 'John',
     'age' => 30,
     'city' => 'New York',
     'occupation' => 'Engineer'
 );
-echo "original";
-dump($data);
 
-$flippedArray = array_flip($data);
-echo "original";
-dump($flippedArray);
+if (isset($_GET['flipped'])) {
+    $data = array_flip($data);
+    echo "<p>Flipped Data:</p>";
+} else {
+    echo "<p>Original Data:</p>";
+}
+
+// Display the data
+dump($data);
 ?>
+
+<!--append the param to the current query string -->
+<a href="?<?php echo isset($_GET['flipped']) ? '' : 'flipped'; ?>"><button>Toggle</button></a>
 <hr>
 
-<!-- merge recursive -->
-<h3>merge recursive</h3>
+<!-- merge -->
+<h3>merge</h3>
 <?php
 include_once "functions.php";
 
-$array1 = array("a" => array("red"), "b" => array("green", "blue"));
-$array2 = array("a" => array("yellow"), "b" => array("black"));
+$array1 = array("a" => "red", "b" => "green");
+$array2 = array("c" => "blue", "b" => "yellow");
 
 echo "original";
 dump($array1);
 dump($array2);
 
-$result = array_merge_recursive($array1, $array2);
+$result = array_merge($array1, $array2);
 echo "modified";
 dump($result);
 
@@ -237,27 +305,36 @@ dump($result)
 
 <!-- array search for key -->
 <h3>array search for key</h3>
+<form method="GET" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <input style="width: 280px;" type="numbers" name="number" id="" placeholder="give me the value and i will give you the key">
+    <input type="submit" />
+</form>
+
 <?php
 include_once "functions.php";
 
 $arr = array("a" => 1, "b" => 2, "c" => 3);
-dump($arr);
 
-$key = array_search(2, $arr); // $key will be "b"
-dump($key);
+if (isset($_GET["number"])) {
+    $key = array_search($_GET["number"], $arr);
+    dump($key);
+} else {
+    echo "Please enter a number to search.";
+}
+
 ?>
 <hr>
 
-<!-- return the keys -->
+<!-- array_keys -->
 <h3>give me the keys</h3>
 <?php
 include_once "functions.php";
 
-$arra = array("a" => 1, "b" => 2, "c" => 3);
+$oses = array("windows" => "win 11", "linux" => "ubuntu", "macos" => "monterey");
 echo "original";
-dump($arr);
+dump($oses);
 
-$keys = array_keys($arr);
+$keys = array_keys($oses);
 echo "modified";
 dump($keys);
 ?>
@@ -268,11 +345,11 @@ dump($keys);
 <?php
 include_once "functions.php";
 
-$arra = array("a" => 1, "b" => 2, "c" => 3);
+$oses = array("windows" => "win 11", "linux" => "ubuntu", "macos" => "monterey");
 echo "original";
-dump($arr);
+dump($oses);
 
-$keys = array_values($arr);
+$keys = array_values($oses);
 echo "modified";
 dump($keys);
 ?>
@@ -283,17 +360,17 @@ dump($keys);
 <?php
 include_once "functions.php";
 
-$arr = array("a" => 1, "b" => 2, "c" => 3);
+$arr = array("windows" => "win 11", "linux" => "ubuntu", "macos" => "monterey");
 
 dump($arr);
 
-echo 'the key ' . (array_key_exists("c", $arr) ? " DOES" : " DOES NOT") . " in the array";
+echo 'the key ' . (array_key_exists("chromeos", $arr) ? " DOES EXIST" : " DOES NOT EXIST") . " in the array";
 
 ?>
 <hr>
 
 <!-- array intersect key  -->
-<h3>Computes the intersection of arrays using keys for comparison.</h3>
+<h3>Compare the keys of two arrays, and return the matches:</h3>
 <?php
 include_once "functions.php";
 
@@ -312,7 +389,7 @@ dump($result);
 <hr>
 
 <!-- array diff using key intersect key  -->
-<h3>Computes the difference of arrays using keys for comparison.</h3>
+<h3>Compare the values of two arrays, and return the differences</h3>
 <?php
 include_once "functions.php";
 
